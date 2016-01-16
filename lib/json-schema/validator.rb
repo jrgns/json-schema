@@ -91,12 +91,12 @@ module JSON
           if !base_schema.has_key?(f)
             raise JSON::Schema::SchemaError.new("Invalid fragment resolution for :fragment option")
           end
-          base_schema = JSON::Schema.new(base_schema[f],schema_uri,@options[:version])
+          base_schema = base_schema[f]
         elsif base_schema.is_a?(Array)
           if base_schema[f.to_i].nil?
             raise JSON::Schema::SchemaError.new("Invalid fragment resolution for :fragment option")
           end
-          base_schema = JSON::Schema.new(base_schema[f.to_i],schema_uri,@options[:version])
+          base_schema = base_schema[f.to_i]
         else
           raise JSON::Schema::SchemaError.new("Invalid schema encountered when resolving :fragment option")
         end
@@ -104,6 +104,8 @@ module JSON
 
       if @options[:list]
         base_schema.to_array_schema
+      elsif base_schema.is_a?(Hash)
+        JSON::Schema.new(base_schema, schema_uri, @options[:version])
       else
         base_schema
       end
